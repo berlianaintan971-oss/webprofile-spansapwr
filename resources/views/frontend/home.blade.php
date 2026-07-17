@@ -57,9 +57,52 @@
                     <h4 class="fw-bold text-secondary mb-3">
                         {{ $kepalaSekolah->nama }}
                     </h4>
-                    <!-- KUNCI PERUBAHAN: Menghapus Str::limit agar teks tampil penuh & membungkus dengan nl2br agar enter paragraf berfungsi -->
+                    
                     <div class="text-muted fs-5 lh-lg mb-0 text-justify">
-                        {!! nl2br(e($kepalaSekolah->sambutan)) !!}
+                        @php
+                            $sambutan = $kepalaSekolah->sambutan;
+                            $limit = 300; // Batas karakter awal yang tampil langsung
+                            $panjangTeks = strlen($sambutan);
+                        @endphp
+
+                        @if($panjangTeks > $limit)
+                            @php
+                                // Ambil porsi teks sesuai limit
+                                $teksAwal = substr($sambutan, 0, $limit);
+                                // Cari spasi terakhir agar kata tidak terpotong menggantung
+                                $posisiSpasiAkhir = strrpos($teksAwal, ' ');
+                                if ($posisiSpasiAkhir !== false) {
+                                    $teksAwal = substr($sambutan, 0, $posisiSpasiAkhir);
+                                    $teksSisa = substr($sambutan, $posisiSpasiAkhir);
+                                } else {
+                                    $teksSisa = substr($sambutan, $limit);
+                                }
+                            @endphp
+
+                            <!-- Teks awal yang selalu tampil -->
+                            <span>{!! nl2br(e($teksAwal)) !!}</span><span id="titik-tiga">...</span>
+
+                            <!-- Sisa teks yang disembunyikan (menggunakan class collapse bawaan Bootstrap) -->
+                            <span class="collapse" id="sambutan-collapse">
+                                {!! nl2br(e($teksSisa)) !!}
+                            </span>
+                            
+                            <!-- Tombol interaktif untuk buka/tutup -->
+                            <div class="mt-3">
+                                <button class="btn btn-link text-primary p-0 fw-bold text-decoration-none" 
+                                        type="button" 
+                                        data-bs-toggle="collapse" 
+                                        data-bs-target="#sambutan-collapse" 
+                                        aria-expanded="false" 
+                                        aria-controls="sambutan-collapse"
+                                        id="btn-toggle-sambutan">
+                                    Baca Selengkapnya <i class="bi bi-chevron-down ms-1"></i>
+                                </button>
+                            </div>
+                        @else
+                            <!-- Tampilkan penuh langsung jika teks pendek -->
+                            {!! nl2br(e($sambutan)) !!}
+                        @endif
                     </div>
                 @endif
             </div>
@@ -136,7 +179,7 @@
                     <div class="card-body p-5 bg-white">
                         <div class="d-flex align-items-center gap-4 mb-4">
                             <div class="bg-primary text-white rounded-4 p-4 d-inline-block shadow-sm">
-                                <h1 class="display-1 fw-black mb-0 leading-none text-white">{{ $akreditasi->nilai_akreditasi }}</h1>
+                                <h1 class="display-1 fw-black mb-0 lh-1 text-white">{{ $akreditasi->nilai_akreditasi }}</h1>
                             </div>
                             <div>
                                 <span class="badge bg-success mb-2 px-3 py-2 fs-6">Terakreditasi Resmi</span>
@@ -160,7 +203,7 @@
 <!-- BERITA -->
 <section class="py-5 bg-light berita-section" id="berita">
     <div class="container">
-        <div class="d-flex justify-content-between align-items-center mb-5">
+        <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center mb-5 gap-3">
             <div>
                 <span class="text-primary fw-bold text-uppercase">
                     Update Terkini
@@ -173,7 +216,7 @@
                 </p>
             </div>
 
-            <a href="{{ route('frontend.berita.index') }}" class="btn btn-primary rounded-pill px-4">
+            <a href="{{ route('frontend.berita.index') }}" class="btn btn-primary rounded-pill px-4 py-2">
                 Lihat Semua Berita
                 <i class="bi bi-arrow-right ms-2"></i>
             </a>
@@ -194,7 +237,7 @@
                                 <div class="mb-3">
                                     <span class="badge bg-primary-subtle text-primary px-3 py-2">
                                         <i class="bi bi-calendar3 me-1"></i>
-                                        {{ $item->created_at->format('d MY') }}
+                                        {{ $item->created_at->format('d M Y') }}
                                     </span>
                                 </div>
 
@@ -202,7 +245,7 @@
                                     {{ $item->judul }}
                                 </h5>
 
-                                <p class="text-muted flex-grow-1">
+                                <p class="text-muted flex-grow-1 text-justify fs-7">
                                     {{ Str::limit(strip_tags($item->isi), 140) }}
                                 </p>
 
@@ -230,7 +273,7 @@
 <!-- GURU & STAF -->
 <section class="py-5 guru-section">
     <div class="container">
-        <div class="d-flex justify-content-between align-items-center mb-5">
+        <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center mb-5 gap-3">
             <div>
                 <span class="text-primary fw-bold text-uppercase">
                     Tenaga Pendidik
@@ -243,27 +286,27 @@
                 </p>
             </div>
 
-            <a href="{{ route('frontend.guru.index') }}" class="btn btn-outline-primary rounded-pill">
+            <a href="{{ route('frontend.guru.index') }}" class="btn btn-outline-primary rounded-pill px-4">
                 Lihat Semua
                 <i class="bi bi-arrow-right ms-1"></i>
             </a>
         </div>
 
-        <div class="row">
+        <div class="row g-4">
             @foreach($guru as $item)
-                <div class="col-md-3 mb-4">
+                <div class="col-6 col-md-4 col-lg-3">
                     <div class="card guru-card border-0 shadow-sm h-100">
                         @if($item->foto)
                             <img src="{{ asset('foto_guru/'.$item->foto) }}" class="guru-photo" alt="{{ $item->nama }}">
                         @else
-                            <img src="https://via.placeholder.com/600x800" class="guru-photo">
+                            <img src="https://via.placeholder.com/600x800?text=No+Photo" class="guru-photo" alt="No Photo">
                         @endif
 
-                        <div class="card-body text-center">
-                            <h5 class="fw-bold mb-2">
+                        <div class="card-body text-center p-3">
+                            <h6 class="fw-bold mb-2 text-truncate" title="{{ $item->nama }}">
                                 {{ $item->nama }}
-                            </h5>
-                            <span class="badge bg-primary">
+                            </h6>
+                            <span class="badge bg-primary fs-7">
                                 {{ $item->jabatan }}
                             </span>
                         </div>
@@ -309,7 +352,6 @@ body {
 .fw-black { font-weight: 900; }
 .fs-7 { font-size: 0.85rem; }
 .max-w-2xl { max-width: 42rem; }
-.leading-none { line-height: 1; }
 .z-1 { z-index: 1; }
 
 .divider {
@@ -319,7 +361,6 @@ body {
     border-radius: 2px;
 }
 
-/* Menambahkan kelas perataan teks rata kanan-kiri (Justify) agar terlihat rapi */
 .text-justify {
     text-align: justify;
 }
@@ -328,7 +369,6 @@ body {
 .bg-primary-soft { background-color: rgba(37, 99, 235, 0.1); }
 .bg-success-soft { background-color: rgba(22, 163, 74, 0.1); }
 .bg-secondary-soft { background-color: rgba(100, 116, 139, 0.1); }
-.text-primary-soft { color: #2563eb; }
 
 /* Hero Modernization */
 .hero-section {
@@ -390,16 +430,6 @@ body {
     border-radius: 20px;
     transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
-.hover-up:hover {
-    transform: translateY(-8px);
-    box-shadow: 0 20px 30px rgba(15, 23, 42, 0.08) !important;
-}
-.hover-up:hover .transition-icon {
-    transform: translateX(5px);
-}
-.transition-icon {
-    transition: transform 0.3s ease;
-}
 
 .berita-card{
     border-radius:20px;
@@ -408,18 +438,15 @@ body {
     box-shadow:0 10px 25px rgba(0,0,0,.08);
     transition:.3s;
 }
-
 .berita-card:hover{
     transform:translateY(-8px);
     box-shadow:0 15px 35px rgba(0,0,0,.12);
 }
-
 .berita-image{
     width:100%;
     height:240px;
     object-fit:cover;
 }
-
 .berita-title{
     min-height:60px;
     line-height:1.5;
@@ -431,11 +458,9 @@ body {
     overflow:hidden;
     transition:.3s;
 }
-
 .guru-card:hover{
     transform:translateY(-8px);
 }
-
 .guru-photo{
     width:100%;
     aspect-ratio:3/4;
@@ -443,9 +468,6 @@ body {
 }
 
 /* PPDB Section */
-.ppdb-section {
-    background: linear-gradient(135deg, #1e3a8a 0%, #2563eb 100%);
-}
 .ppdb-banner {
     border-radius: 24px;
     box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
@@ -462,4 +484,27 @@ body {
     .display-5 { font-size: 2rem; }
 }
 </style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const collapseElement = document.getElementById('sambutan-collapse');
+    const toggleButton = document.getElementById('btn-toggle-sambutan');
+    const titikTiga = document.getElementById('titik-tiga');
+
+    if (collapseElement && toggleButton) {
+        // Event saat teks mulai dibuka (Slide Down)
+        collapseElement.addEventListener('show.bs.collapse', function () {
+            toggleButton.innerHTML = 'Sembunyikan <i class="bi bi-chevron-up ms-1"></i>';
+            if (titikTiga) titikTiga.style.display = 'none';
+        });
+
+        // Event saat teks mulai ditutup (Slide Up)
+        collapseElement.addEventListener('hide.bs.collapse', function () {
+            toggleButton.innerHTML = 'Baca Selengkapnya <i class="bi bi-chevron-down ms-1"></i>';
+            if (titikTiga) titikTiga.style.display = 'inline';
+        });
+    }
+});
+</script>
+
 @endsection
