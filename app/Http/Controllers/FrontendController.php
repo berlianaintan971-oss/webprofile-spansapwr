@@ -88,9 +88,10 @@ class FrontendController extends Controller
             ->orderBy('nama')
             ->get();
 
+        // UBAH BAGIAN INI: Dari ->get() menjadi ->paginate(8) atau sesuai jumlah data per halaman yang diinginkan
         $guru = Guru::where('kategori', 'Guru')
             ->orderBy('nama')
-            ->get();
+            ->paginate(8);
 
         return view(
             'frontend.guru.index',
