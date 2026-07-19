@@ -5,10 +5,10 @@
 
     <div class="text-center mb-5">
         <h1 class="fw-bold">
-            Penerimaan Peserta Didik Baru
+            Sistem Penerimaan Murid Baru
         </h1>
         <p class="text-muted">
-            Informasi Penerimaan Peserta Didik Baru SMP Negeri 1 Purworejo.
+            Informasi Sistem Penerimaan Murid Baru SMP Negeri 1 Purworejo.
         </p>
     </div>
 

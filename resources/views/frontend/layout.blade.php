@@ -259,7 +259,7 @@
 
                 <li class="nav-item ms-lg-3 my-2 my-lg-0">
                     <a href="{{ route('frontend.ppdb') }}" class="btn btn-warning btn-ppdb w-100 text-center">
-                        <i class="bi bi-megaphone-fill"></i> PPDB
+                        <i class="bi bi-megaphone-fill"></i> SPMB
                     </a>
                 </li>
 
@@ -307,7 +307,7 @@
                         <a href="{{ route('home') }}">Beranda</a>
                         <a href="{{ route('frontend.sejarah') }}">Profil</a>
                         <a href="{{ route('frontend.berita.index') }}">Berita</a>
-                        <a href="{{ route('frontend.ppdb') }}">PPDB</a>
+                        <a href="{{ route('frontend.ppdb') }}">SPMB</a>
                     </div>
                 </div>
 

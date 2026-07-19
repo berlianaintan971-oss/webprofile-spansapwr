@@ -40,11 +40,11 @@
     <div class="mb-4">
 
         <h2 class="page-title">
-            Banner PPDB
+            Banner SPMB
         </h2>
 
         <p class="text-muted mb-0">
-            Kelola banner atau poster Penerimaan Peserta Didik Baru.
+            Kelola banner atau poster Sistem Penerimaan Murid Baru.
         </p>
 
     </div>
@@ -77,7 +77,7 @@
             <div class="mb-4">
 
                 <label class="form-label fw-semibold">
-                    Upload Banner PPDB
+                    Upload Banner SPMB
                 </label>
 
                 <input type="file"
